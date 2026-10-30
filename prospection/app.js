@@ -168,10 +168,18 @@ out center tags;`;
 
   // ---------- Carte ----------
   const map = L.map('map', { preferCanvas: true, zoomControl: true }).setView(prefs.view?.c || [45.33, -74.15], prefs.view?.z || 10);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-    maxZoom: 20, subdomains: 'abcd',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-  }).addTo(map);
+  // Fonds de carte gratuits sans clé API. Les tuiles OSM exigent un référent HTTP(S) :
+  // en ouverture directe du fichier (file://), on démarre sur Esri.
+  const osmAttr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+  const esriAttr = 'Tuiles &copy; Esri';
+  const baseLayers = {
+    'Plan (OpenStreetMap)': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: osmAttr }),
+    'Plan (Esri)': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: esriAttr }),
+    'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: esriAttr })
+  };
+  const defaultBase = location.protocol.startsWith('http') ? 'Plan (OpenStreetMap)' : 'Plan (Esri)';
+  (baseLayers[prefs.base] || baseLayers[defaultBase]).addTo(map);
+  map.on('baselayerchange', e => { prefs.base = e.name; save(LS.prefs, prefs); });
   const markersLayer = L.layerGroup().addTo(map);
   const tourLayer = L.layerGroup().addTo(map);
   const zonesLayer = L.layerGroup();
@@ -182,7 +190,7 @@ out center tags;`;
     L.rectangle([[z.bbox[0], z.bbox[1]], [z.bbox[2], z.bbox[3]]], { color: '#111', weight: 1, dashArray: '4 4', fill: false, interactive: false })
       .bindTooltip(z.name, { permanent: false }).addTo(zonesLayer);
   });
-  L.control.layers(null, { 'Contours des zones': zonesLayer }, { position: 'topright' }).addTo(map);
+  L.control.layers(baseLayers, { 'Contours des zones': zonesLayer }, { position: 'topright' }).addTo(map);
 
   map.on('moveend', () => {
     prefs.view = { c: [map.getCenter().lat, map.getCenter().lng], z: map.getZoom() }; save(LS.prefs, prefs);

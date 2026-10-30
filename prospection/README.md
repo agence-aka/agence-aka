@@ -33,4 +33,4 @@ Menu **⋯** : sauvegarde complète `.json` (pour changer d'ordi ou de navigateu
 
 ## Fichiers
 `index.html` · `app.js` (logique) · `data.js` (zones, statuts, catégories) · `style.css` · `vendor/leaflet` (carte, inclus localement).
-Fonds de carte © OpenStreetMap / CARTO.
+Fonds de carte © OpenStreetMap et Esri (sans clé API). La vue « Satellite » se choisit avec le bouton des calques.
