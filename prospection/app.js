@@ -6,12 +6,16 @@
   const OFFICE_SKIP = new Set(['government', 'ngo', 'religion', 'association', 'educational_institution', 'diplomatic', 'political_party', 'union', 'yes']);
   const ENDPOINTS = [
     'https://overpass-api.de/api/interpreter',
-    'https://overpass.kumi.systems/api/interpreter',
-    'https://maps.mail.ru/osm/tools/overpass/api/interpreter'
+    'https://overpass.private.coffee/api/interpreter',
+    'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter'
   ];
+  const CELL = 0.02;            // la carte est découpée en cases de ~2 km, chargées à la demande
+  const CELL_TTL = 30 * 864e5;  // une case est rechargée après 30 jours
+  const AUTO_MIN_ZOOM = 13;
 
   // ---------- Stockage local ----------
-  const LS = { places: 'aka.prosp.places.v1', crm: 'aka.prosp.crm.v1', tour: 'aka.prosp.tour.v1', zones: 'aka.prosp.zones.v1', prefs: 'aka.prosp.prefs.v1' };
+  const LS = { places: 'aka.prosp.places.v1', crm: 'aka.prosp.crm.v1', tour: 'aka.prosp.tour.v1', zones: 'aka.prosp.zones.v1', prefs: 'aka.prosp.prefs.v1', cells: 'aka.prosp.cells.v1' };
   const load = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { toast('⚠️ Impossible de sauvegarder (stockage du navigateur plein ou bloqué).'); } };
 
@@ -20,6 +24,7 @@
   let tour = load(LS.tour, []);       // ids ordonnés
   let loadedZones = load(LS.zones, {}); // zoneId -> { at, count }
   let prefs = load(LS.prefs, {});
+  let cells = load(LS.cells, {});     // "i:j" -> date du dernier chargement
   let myPos = null;
   let selectedId = null;
   let addMode = false;
@@ -94,7 +99,7 @@
     return best.id;
   }
 
-  function fromOsm(el, zone) {
+  function fromOsm(el) {
     const t = el.tags || {};
     if (!t.name) return null;
     const lat = el.lat ?? el.center?.lat, lon = el.lon ?? el.center?.lon;
@@ -108,7 +113,7 @@
     const zoneId = nearestZone(lat, lon);
     return {
       id: `osm-${el.type[0]}${el.id}`, source: 'osm', name: t.name, cat: c.cat, group: c.group,
-      lat, lon, zone: zoneId || zone.id, street, city: t['addr:city'] || ZONE[zoneId]?.name || zone.name,
+      lat, lon, zone: zoneId, street, city: t['addr:city'] || ZONE[zoneId].name,
       postcode: t['addr:postcode'] || '', phone: t.phone || t['contact:phone'] || '', website, facebook,
       instagram: t['contact:instagram'] || t.instagram || '', email: t.email || t['contact:email'] || '',
       hours: t.opening_hours || '', chain: !!(t.brand || t['brand:wikidata'])
@@ -132,37 +137,113 @@
 );
 out center tags;`;
   }
+  let epIndex = 0; // on commence par le dernier serveur qui a répondu
   async function overpass(q) {
     let last;
-    for (const ep of ENDPOINTS) {
+    for (let k = 0; k < ENDPOINTS.length; k++) {
+      const i = (epIndex + k) % ENDPOINTS.length;
+      const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 40000);
       try {
-        const r = await fetch(ep, { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } });
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
-        return await r.json();
-      } catch (e) { last = e; }
+        const r = await fetch(ENDPOINTS[i], { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, signal: ctrl.signal });
+        if (!r.ok) throw new Error(r.status === 429 ? 'serveur surchargé (429)' : r.status === 504 ? 'serveur trop lent (504)' : `HTTP ${r.status}`);
+        const json = await r.json();
+        epIndex = i;
+        return json;
+      } catch (e) {
+        last = e.name === 'AbortError' ? new Error('délai dépassé') : e;
+        console.warn('Overpass', ENDPOINTS[i], last.message);
+      } finally { clearTimeout(timer); }
     }
     throw last || new Error('Aucun serveur disponible');
   }
-  const loading = new Set();
-  async function loadZone(zoneId) {
+
+  const cellKey = c => `${c[0]}:${c[1]}`;
+  function cellsIn(b) {
+    const out = [];
+    for (let i = Math.floor(b[0] / CELL); i < Math.ceil(b[2] / CELL); i++)
+      for (let j = Math.floor(b[1] / CELL); j < Math.ceil(b[3] / CELL); j++) out.push([i, j]);
+    return out;
+  }
+  const isFresh = c => Date.now() - (cells[cellKey(c)] || 0) < CELL_TTL;
+
+  // Charge des cases par blocs de 3×3 (≈6 km) : petites requêtes rapides plutôt qu'une énorme qui expire.
+  async function fetchCells(list, onProgress) {
+    const groups = new Map();
+    for (const c of list) {
+      const k = `${Math.floor(c[0] / 3)}:${Math.floor(c[1] / 3)}`;
+      if (!groups.has(k)) groups.set(k, []);
+      groups.get(k).push(c);
+    }
+    let added = 0, done = 0, failed = 0, lastErr = null;
+    for (const g of groups.values()) {
+      const is = g.map(c => c[0]), js = g.map(c => c[1]);
+      const bbox = [Math.min(...is) * CELL, Math.min(...js) * CELL, (Math.max(...is) + 1) * CELL, (Math.max(...js) + 1) * CELL];
+      try {
+        const json = await overpass(buildQuery(bbox));
+        for (const el of json.elements || []) {
+          const p = fromOsm(el); if (!p) continue;
+          if (!places[p.id]) added++;
+          places[p.id] = p;
+        }
+        const now = Date.now();
+        g.forEach(c => (cells[cellKey(c)] = now));
+      } catch (e) { failed++; lastErr = e; }
+      done++;
+      onProgress?.(done, groups.size, added);
+    }
+    savePlaces(); save(LS.cells, cells);
+    return { added, failed, lastErr, total: groups.size };
+  }
+
+  const loading = new Map(); // zoneId -> texte de progression
+  async function loadZone(zoneId, { force = false } = {}) {
     const z = ZONE[zoneId]; if (!z || loading.has(zoneId)) return;
-    loading.add(zoneId); renderZones();
+    const list = cellsIn(z.bbox).filter(c => force || !isFresh(c));
+    loading.set(zoneId, '…'); renderZones();
     try {
-      const json = await overpass(buildQuery(z.bbox));
-      let n = 0;
-      for (const el of json.elements || []) {
-        const p = fromOsm(el, z); if (!p) continue;
-        places[p.id] = p; n++;
-      }
-      loadedZones[zoneId] = { at: Date.now(), count: n };
-      savePlaces(); save(LS.zones, loadedZones);
-      toast(`✅ ${z.name} : ${n} commerces chargés`);
+      const r = await fetchCells(list, (d, t) => { loading.set(zoneId, `${d}/${t}`); renderZones(); });
+      if (r.failed < r.total || !r.total) loadedZones[zoneId] = { at: Date.now() };
+      save(LS.zones, loadedZones);
+      if (r.failed) toast(`⚠️ ${z.name} : ${r.failed} secteur(s) sur ${r.total} n'ont pas répondu (${r.lastErr?.message}). Réappuie sur « Charger » pour compléter.`, 6000);
+      else toast(`✅ ${z.name} : ${r.added} nouveaux commerces`);
       refresh();
-    } catch (e) {
-      console.error(e);
-      toast(`❌ ${z.name} : échec du chargement (${e.message}). Vérifie ta connexion et réessaie.`, 5000);
     } finally {
       loading.delete(zoneId); renderZones();
+    }
+  }
+
+  // ---------- Chargement automatique de la vue (temps réel) ----------
+  let autoBusy = false, autoAgain = false, autoTimer, statusTimer;
+  function mapStatus(html, ms) {
+    const el = $('#mapStatus');
+    clearTimeout(statusTimer);
+    if (!html) { el.hidden = true; return; }
+    el.innerHTML = html; el.hidden = false;
+    if (ms) statusTimer = setTimeout(() => (el.hidden = true), ms);
+  }
+  function viewBbox(pad = 0.15) {
+    const b = map.getBounds().pad(pad);
+    return [b.getSouth(), b.getWest(), b.getNorth(), b.getEast()];
+  }
+  async function autoLoad(force = false) {
+    if (prefs.autoload === false && !force) return;
+    if (map.getZoom() < AUTO_MIN_ZOOM) {
+      if (prefs.autoload !== false) mapStatus('🔍 Zoome sur un secteur pour charger ses commerces');
+      return;
+    }
+    if (autoBusy) { autoAgain = true; return; }
+    const missing = cellsIn(viewBbox()).filter(c => force || !isFresh(c));
+    if (!missing.length) { mapStatus(''); return; }
+    autoBusy = true;
+    mapStatus('<span class="spin dark"></span> Chargement des commerces du secteur…');
+    try {
+      const r = await fetchCells(missing, (d, t) => t > 1 && mapStatus(`<span class="spin dark"></span> Chargement des commerces… ${d}/${t}`));
+      if (r.failed === r.total) mapStatus(`❌ Serveur OpenStreetMap indisponible (${esc(r.lastErr?.message)}). <button class="link" id="retryLoad">Réessayer</button>`);
+      else mapStatus(r.added ? `✅ ${r.added} nouveaux commerces` : '✅ Secteur à jour', 2500);
+      refresh();
+    } finally {
+      autoBusy = false;
+      if (autoAgain) { autoAgain = false; autoLoad(); }
     }
   }
 
@@ -195,7 +276,9 @@ out center tags;`;
   map.on('moveend', () => {
     prefs.view = { c: [map.getCenter().lat, map.getCenter().lng], z: map.getZoom() }; save(LS.prefs, prefs);
     if ($('#fInView').checked) renderList();
+    clearTimeout(autoTimer); autoTimer = setTimeout(autoLoad, 500);
   });
+  $('#mapStatus').addEventListener('click', e => { if (e.target.id === 'retryLoad') autoLoad(true); });
   map.on('click', e => {
     if (!addMode) return;
     setAddMode(false);
@@ -556,13 +639,13 @@ out center tags;`;
     const counts = {};
     for (const id in places) { const z = places[id].zone; counts[z] = (counts[z] || 0) + 1; }
     $('#zones').innerHTML = D.zones.map(z => {
-      const lz = loadedZones[z.id], busy = loading.has(z.id);
+      const lz = loadedZones[z.id], busy = loading.get(z.id);
       return `<li>
         <div class="li-main"><div class="li-title">${esc(z.name)}</div><div class="li-sub">${esc(z.sub)}</div>
-        <div class="li-sub">${lz ? `✅ ${counts[z.id] || 0} commerces · maj ${fmtDate(lz.at)}` : 'Pas encore chargé'}</div></div>
+        <div class="li-sub">${counts[z.id] ? `✅ ${counts[z.id]} commerces` : 'Pas encore chargé'}${lz ? ` · maj ${fmtDate(lz.at)}` : ''}</div></div>
         <div class="z-btns">
           <button class="btn ghost sm" data-z="view" data-id="${z.id}">Voir</button>
-          <button class="btn sm" data-z="load" data-id="${z.id}" ${busy ? 'disabled' : ''}>${busy ? '<span class="spin"></span>' : lz ? 'Actualiser' : 'Charger'}</button>
+          <button class="btn sm" data-z="load" data-id="${z.id}" ${busy ? 'disabled' : ''}>${busy ? `<span class="spin"></span> ${busy}` : lz ? 'Actualiser' : 'Charger'}</button>
         </div></li>`;
     }).join('');
   }
@@ -570,8 +653,10 @@ out center tags;`;
     const b = e.target.closest('[data-z]'); if (!b) return;
     const z = ZONE[b.dataset.id];
     if (b.dataset.z === 'view') { map.fitBounds([[z.bbox[0], z.bbox[1]], [z.bbox[2], z.bbox[3]]]); $('#fZone').value = z.id; $('#fZone').dispatchEvent(new Event('change')); showView('map'); }
-    else loadZone(z.id);
+    else loadZone(z.id, { force: !!loadedZones[z.id] });
   });
+  $('#fAuto').checked = prefs.autoload !== false;
+  $('#fAuto').addEventListener('change', e => { prefs.autoload = e.target.checked; save(LS.prefs, prefs); if (e.target.checked) autoLoad(); else mapStatus(''); });
   $('#btnLoadAll').addEventListener('click', async () => {
     for (const z of D.zones) await loadZone(z.id); // séquentiel pour ménager le serveur gratuit
   });
@@ -584,7 +669,7 @@ out center tags;`;
       myPos = [pos.coords.latitude, pos.coords.longitude];
       if (posMarker) map.removeLayer(posMarker);
       posMarker = L.circleMarker(myPos, { radius: 8, color: '#fff', weight: 3, fillColor: '#0ea5e9', fillOpacity: 1 }).bindTooltip('Ma position').addTo(map);
-      map.flyTo(myPos, Math.max(map.getZoom(), 14));
+      map.flyTo(myPos, Math.max(map.getZoom(), 15));
       refresh();
     }, err => toast('Position refusée ou indisponible (' + err.message + ')', 4000), { enableHighAccuracy: true, timeout: 10000 });
   }
@@ -656,5 +741,6 @@ out center tags;`;
   initFilters();
   showTab(prefs.tab || (Object.keys(places).length ? 'list' : 'zones'));
   refresh();
-  if (!Object.keys(places).length) toast('👋 Commence par charger une zone dans l\'onglet « Zones »', 4500);
+  if (!Object.keys(places).length) toast('👋 Zoome sur une ville (ou appuie sur 📍) : les commerces se chargent tout seuls', 5000);
+  autoLoad();
 })();

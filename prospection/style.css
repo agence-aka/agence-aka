@@ -143,6 +143,15 @@ body.adding #map { cursor: crosshair; }
 }
 .add-hint .link { color: #fff; }
 
+.map-status {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 550; background: rgba(255,255,255,.96);
+  padding: 9px 14px; border-radius: 999px; font-size: 13px; box-shadow: 0 4px 16px rgba(0,0,0,.18); white-space: nowrap;
+  display: flex; align-items: center; gap: 8px; max-width: calc(100% - 120px); overflow: hidden; text-overflow: ellipsis;
+}
+.spin.dark { border-color: rgba(0,0,0,.15); border-top-color: var(--ink); }
+.auto-toggle { display: flex; gap: 10px; align-items: flex-start; margin: 12px; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); cursor: pointer; }
+.auto-toggle input { margin-top: 3px; width: 18px; height: 18px; flex: none; }
+
 /* ---------- Fiche (drawer) ---------- */
 .drawer {
   position: absolute; top: 0; right: 0; bottom: 0; width: 400px; max-width: 100%; background: var(--surface); z-index: 1100;

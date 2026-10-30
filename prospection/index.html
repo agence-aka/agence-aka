@@ -83,7 +83,8 @@
     </section>
 
     <section class="panel" id="panel-zones" hidden>
-      <p class="muted small">Importe les commerces de chaque secteur à partir d'OpenStreetMap (gratuit, nécessite Internet). Tes notes et statuts sont conservés quand tu actualises.</p>
+      <label class="auto-toggle"><input type="checkbox" id="fAuto" checked> <span><b>Chargement automatique</b><br><span class="muted small">Les commerces du secteur affiché se chargent en temps réel quand tu déplaces ou zoomes la carte.</span></span></label>
+      <p class="muted small">Tu peux aussi importer une ville entière d'un coup (données OpenStreetMap, gratuit, Internet requis). Tes notes et statuts sont conservés quand tu actualises.</p>
       <div class="tour-actions"><button class="btn" id="btnLoadAll">Charger toutes les zones</button></div>
       <ul class="zones" id="zones"></ul>
       <p class="muted small">💡 OpenStreetMap n'est pas exhaustif : un commerce manque ? Utilise <b>＋ Ajouter</b> puis touche la carte à son emplacement.</p>
@@ -92,6 +93,7 @@
 
   <div class="map-wrap">
     <div id="map"></div>
+    <div class="map-status" id="mapStatus" hidden></div>
     <div class="legend" id="legend"></div>
     <div class="add-hint" id="addHint" hidden>Touche la carte à l'emplacement du commerce · <button class="link" id="cancelAdd">Annuler</button></div>
   </div>

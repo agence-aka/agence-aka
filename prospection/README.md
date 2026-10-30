@@ -10,7 +10,7 @@ Application **100 % locale** (aucun compte, aucun serveur) pour planifier la tou
 > Les données (statuts, notes, tournée) sont enregistrées **dans le navigateur** utilisé. Garde toujours le même navigateur et la même méthode d'ouverture (fichier *ou* lanceur), et fais une sauvegarde régulière via le menu **⋯ → Sauvegarder mes données**.
 
 ## Premiers pas
-1. Onglet **Zones** → **Charger** une ville (ou **Charger toutes les zones**). Les commerces viennent d'OpenStreetMap (Internet requis).
+1. Zoome sur une ville (ou appuie sur 📍) : les commerces du secteur affiché se **chargent automatiquement en temps réel** depuis OpenStreetMap (Internet requis). Pour importer une ville entière d'un coup : onglet **Zones** → **Charger**.
 2. Onglet **Liste** → filtre par zone, secteur, statut ; coche **Sans site web** pour cibler les meilleures opportunités. Le tri par défaut met les prospects 🔥 en premier.
 3. Appuie sur un commerce (liste ou point sur la carte) pour ouvrir sa fiche : statut, angles de pitch, coordonnées, notes, personne contact, date de relance.
 4. **🚗 Ajouter à la tournée** → onglet **Tournée** → **⚡ Optimiser l'ordre** → **🧭 Google Maps** pour lancer la navigation.
