@@ -1,0 +1,56 @@
+Ordre;Ville;Commerce;Type;Adresse complète;À vérifier
+1;Vaudreuil-Dorion;Bistro;Restaurant;280 boulevard Harwood, Vaudreuil-Dorion, QC;
+2;Vaudreuil-Dorion;Restaurant Dorion;Restaurant;297 boulevard Harwood, Vaudreuil-Dorion, QC;
+3;Vaudreuil-Dorion;Sous les Oliviers;Restaurant;345 boulevard Harwood, Vaudreuil-Dorion, QC;
+4;Vaudreuil-Dorion;EggsCrepes;Déjeuners;349 boulevard Harwood, Vaudreuil-Dorion, QC;
+5;Vaudreuil-Dorion;Wei Wah Buffet;Restaurant;351 boulevard Harwood, Vaudreuil-Dorion, QC;
+6;Vaudreuil-Dorion;Sushi Yagami;Sushi;369 boulevard Harwood, Vaudreuil-Dorion, QC;
+7;Vaudreuil-Dorion;Bhandari Cuisine Indienne;Restaurant;371 boulevard Harwood, Vaudreuil-Dorion, QC;
+8;Vaudreuil-Dorion;Pizza Gusta Dorion;Pizzeria;385 boulevard Harwood, Vaudreuil-Dorion, QC;
+9;Vaudreuil-Dorion;Restaurant El Hornello;Restaurant;401 boulevard Harwood #1b, Vaudreuil-Dorion, QC;
+10;Vaudreuil-Dorion;Coiffure Mini Snips;Coiffure;100 boulevard Harwood local M2, Vaudreuil-Dorion, QC;
+11;Vaudreuil-Dorion;Salon Figaro Coiffure Elle & Lui;Coiffure;115 rue Dumont, Vaudreuil-Dorion, QC;
+12;Vaudreuil-Dorion;Bellini Coiffure;Coiffure;117 rue Dumont, Vaudreuil-Dorion, QC;
+13;Vaudreuil-Dorion;SUITE.110 coiffure & esthétique;Coiffure / esthétique;428 avenue Saint-Charles, Vaudreuil-Dorion, QC;Autre adresse listée : 2500 rue Henry-Ford
+14;Vaudreuil-Dorion;Coiffure Living Room;Coiffure;472 avenue Saint-Charles, Vaudreuil-Dorion, QC;Autre adresse listée : 280 rue Bourget
+15;Vaudreuil-Dorion;Salon de Coiffure Styl-Lib;Coiffure;585 avenue Saint-Charles local 430, Vaudreuil-Dorion, QC;
+16;Vaudreuil-Dorion;Coiffure de L'Anse;Coiffure;1051 avenue Saint-Charles, Vaudreuil-Dorion, QC;
+17;Vaudreuil-Dorion;La Mousse Coiffure;Coiffure;1001 avenue Émile-Bouchard local 104, Vaudreuil-Dorion, QC;
+18;Vaudreuil-Dorion;Minimod Coiffure;Coiffure;3080 boulevard de la Gare, Vaudreuil-Dorion, QC;
+19;Île-Perrot;Le Balnéo Restaurant Bar;Restaurant / bar;106 boulevard Don-Quichotte #18, L'Île-Perrot, QC;
+20;Île-Perrot;Pizza Nova;Pizzeria;100 boulevard Don-Quichotte, L'Île-Perrot, QC;
+21;Île-Perrot;Sushi Sama;Sushi;15 boulevard Don-Quichotte local 104, L'Île-Perrot, QC;
+22;Notre-Dame-de-l'Île-Perrot;Zoto Sushi;Sushi;450 boulevard Don-Quichotte, Notre-Dame-de-l'Île-Perrot, QC;
+23;Saint-Lazare;Tompol le Café;Café;1592 chemin Sainte-Angélique, Saint-Lazare, QC;
+24;Saint-Lazare;Z Pizza;Pizzeria;1625 chemin Sainte-Angélique, Saint-Lazare, QC;
+25;Saint-Lazare;Le 1710;Restaurant;1710 chemin Sainte-Angélique, Saint-Lazare, QC;
+26;Saint-Lazare;Zéphyr Pâtisserie;Pâtisserie;1828 chemin Sainte-Angélique, Saint-Lazare, QC;
+27;Saint-Lazare;Les Cheffettes;Traiteur / prêt-à-manger;1867A chemin Sainte-Angélique, Saint-Lazare, QC;
+28;Saint-Lazare;Restaurant Bravo St-Lazare Pizzeria;Pizzeria;1867 chemin Sainte-Angélique, Saint-Lazare, QC;
+29;Saint-Lazare;Bar Chez Maurice;Bar;1897 chemin Sainte-Angélique, Saint-Lazare, QC;
+30;Saint-Lazare;Rebelle Bistro;Bistro;2023 chemin Sainte-Angélique, Saint-Lazare, QC;Ou 2027 selon la source
+31;Saint-Lazare;Brasserie Angélique;Brasserie;2131 chemin Sainte-Angélique, Saint-Lazare, QC;
+32;Hudson;Furley Pain Viande & Vin;Boulangerie / boucherie / bar à vin;411B rue Main, Hudson, QC;Ou 407 selon la source
+33;Hudson;Hastings Book Collection;Librairie;441 rue Main, Hudson, QC;
+34;Hudson;Seconde main;Friperie;457 rue Main, Hudson, QC;
+35;Hudson;Microbrasserie Cardinal Brewing;Microbrasserie;466 rue Main, Hudson, QC;
+36;Hudson;Le Corbeau et le Renard;Librairie;472 rue Main, Hudson, QC;
+37;Hudson;Pete's Antique;Antiquités;761 rue Main, Hudson, QC;
+38;Hudson;Apothicaire M&N;Boutique;73a rue Cameron, Hudson, QC;
+39;Rigaud;Restaurant Terrasse de Chine;Restaurant;131 rue Saint-Pierre, Rigaud, QC;
+40;Rigaud;Restaurant Deux Frères;Restaurant;134 rue Saint-Pierre, Rigaud, QC;
+41;Rigaud;Le Café de l'Horloge;Café;168 rue Saint-Pierre, Rigaud, QC;
+42;Coteau-du-Lac;La Posta Café Bistro;Café-bistro;6 rue Principale, Coteau-du-Lac, QC;
+43;Coteau-du-Lac;Brochetterie Naxos;Restaurant;19 rue Principale, Coteau-du-Lac, QC;
+44;Coteau-du-Lac;Restaurant Casseau du Fort;Restaurant;306 chemin du Fleuve, Coteau-du-Lac, QC;
+45;Coteau-du-Lac;Crème et Cie;Crèmerie;309 chemin du Fleuve, Coteau-du-Lac, QC;
+46;Saint-Zotique;Aki Sushi;Sushi;350 rue Principale, Saint-Zotique, QC;
+47;Saint-Zotique;Restaurant St-Zotique Souvlaki;Restaurant;2727 rue Principale, Saint-Zotique, QC;
+48;Valleyfield;Restaurant Parasol;Restaurant;53 rue Victoria, Salaberry-de-Valleyfield, QC;Autre adresse listée : 320 boul. Mgr-Langlois
+49;Valleyfield;Café Chocolatier Giroux;Café / chocolaterie;261 rue Victoria, Salaberry-de-Valleyfield, QC;Une fiche le dit fermé
+50;Valleyfield;Sushi Jen / Thé Hana;Sushi / thé;31 rue Nicholson, Salaberry-de-Valleyfield, QC;
+51;Valleyfield;Bar Luxembourg;Bar;44 rue Nicholson, Salaberry-de-Valleyfield, QC;
+52;Valleyfield;Bistro 45;Bistro;45 rue Nicholson, Salaberry-de-Valleyfield, QC;Tél. 450-801-4500
+53;Valleyfield;Wild Wing Brasserie Sportive;Brasserie;47 rue Nicholson, Salaberry-de-Valleyfield, QC;
+54;Valleyfield;Amir;Restaurant;1900 boulevard Monseigneur-Langlois, Salaberry-de-Valleyfield, QC;Franchise
+55;Valleyfield;Restaurant Langlois;Restaurant;2755 rue Monseigneur-Langlois, Salaberry-de-Valleyfield, QC;
