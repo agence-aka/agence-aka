@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AKA Prospection</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">AKA</span><span class="brand-sub">Prospection · Vaudreuil-Soulanges &amp; Valleyfield</span></div>
+  <div class="stats" id="stats"></div>
+  <div class="top-actions">
+    <button class="btn ghost" id="btnLocate" title="Ma position">📍<span class="hide-sm"> Ma position</span></button>
+    <button class="btn" id="btnAdd" title="Ajouter un commerce manuellement">＋<span class="hide-sm"> Ajouter</span></button>
+    <div class="menu-wrap">
+      <button class="btn ghost" id="btnMenu" aria-haspopup="true">⋯</button>
+      <div class="menu" id="menu" hidden>
+        <button data-act="export-json">Sauvegarder mes données (.json)</button>
+        <button data-act="import-json">Restaurer une sauvegarde…</button>
+        <button data-act="export-csv">Exporter en CSV (Excel)</button>
+        <hr>
+        <button data-act="reset" class="danger">Tout effacer…</button>
+      </div>
+    </div>
+    <input type="file" id="fileImport" accept="application/json,.json" hidden>
+  </div>
+</header>
+
+<main class="layout" data-view="map">
+  <aside class="sidebar">
+    <nav class="tabs" id="tabs">
+      <button data-tab="list" class="active">Liste</button>
+      <button data-tab="tour">Tournée <span class="count" id="tourCount">0</span></button>
+      <button data-tab="zones">Zones</button>
+    </nav>
+
+    <section class="panel" id="panel-list">
+      <div class="filters">
+        <input type="search" id="fSearch" placeholder="Rechercher un nom, une rue, une ville…">
+        <div class="row">
+          <select id="fZone"><option value="">Toutes les zones</option></select>
+          <select id="fGroup"><option value="">Tous les secteurs</option></select>
+        </div>
+        <div class="row">
+          <select id="fStatus"><option value="">Tous les statuts</option></select>
+          <select id="fSort">
+            <option value="score">Tri : potentiel 🔥</option>
+            <option value="name">Tri : nom A→Z</option>
+            <option value="distance">Tri : plus proche</option>
+            <option value="updated">Tri : modifiés récemment</option>
+          </select>
+        </div>
+        <div class="checks">
+          <label><input type="checkbox" id="fNoSite"> Sans site web</label>
+          <label><input type="checkbox" id="fNoChain" checked> Masquer les chaînes</label>
+          <label><input type="checkbox" id="fInView"> Zone visible de la carte</label>
+          <label><input type="checkbox" id="fFav"> ★ Prioritaires</label>
+        </div>
+      </div>
+      <div class="list-head"><span id="resultCount">0 commerce</span><button class="link" id="btnAddAllToTour">+ Ajouter les 10 premiers à la tournée</button></div>
+      <ul class="list" id="list"></ul>
+      <div class="empty" id="emptyList" hidden>
+        <p><strong>Aucun commerce chargé pour l'instant.</strong></p>
+        <p>Va dans l'onglet <b>Zones</b> et appuie sur <b>Charger</b> pour importer les commerces d'une ville (données OpenStreetMap).</p>
+        <button class="btn" data-goto="zones">Aller aux zones</button>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-tour" hidden>
+      <div class="tour-actions">
+        <button class="btn" id="btnOptimize" title="Réordonne les arrêts pour le trajet le plus court">⚡ Optimiser l'ordre</button>
+        <button class="btn ghost" id="btnClearTour">Vider</button>
+      </div>
+      <p class="muted small" id="tourInfo"></p>
+      <ol class="tour" id="tour"></ol>
+      <div id="tourLinks" class="tour-links"></div>
+      <div class="empty" id="emptyTour">
+        <p><strong>Ta tournée est vide.</strong></p>
+        <p>Ouvre un commerce et appuie sur <b>« Ajouter à la tournée »</b>. Ensuite, optimise l'ordre et lance l'itinéraire dans Google Maps.</p>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-zones" hidden>
+      <p class="muted small">Importe les commerces de chaque secteur à partir d'OpenStreetMap (gratuit, nécessite Internet). Tes notes et statuts sont conservés quand tu actualises.</p>
+      <div class="tour-actions"><button class="btn" id="btnLoadAll">Charger toutes les zones</button></div>
+      <ul class="zones" id="zones"></ul>
+      <p class="muted small">💡 OpenStreetMap n'est pas exhaustif : un commerce manque ? Utilise <b>＋ Ajouter</b> puis touche la carte à son emplacement.</p>
+    </section>
+  </aside>
+
+  <div class="map-wrap">
+    <div id="map"></div>
+    <div class="legend" id="legend"></div>
+    <div class="add-hint" id="addHint" hidden>Touche la carte à l'emplacement du commerce · <button class="link" id="cancelAdd">Annuler</button></div>
+  </div>
+
+  <aside class="drawer" id="drawer" hidden>
+    <button class="drawer-close" id="drawerClose" aria-label="Fermer">✕</button>
+    <div id="drawerBody"></div>
+  </aside>
+</main>
+
+<nav class="bottom-nav" id="bottomNav">
+  <button data-view="map" class="active">🗺️<span>Carte</span></button>
+  <button data-view="list">📋<span>Liste</span></button>
+  <button data-view="tour">🚗<span>Tournée</span></button>
+  <button data-view="zones">📦<span>Zones</span></button>
+</nav>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
