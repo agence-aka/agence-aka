@@ -7,6 +7,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const nav = [
     { href: '/dashboard', label: 'Vue d’ensemble' },
+    { href: '/dashboard/leads', label: 'Leads & prospection' },
     { href: '/dashboard/calendar', label: 'Calendrier' },
     { href: '/dashboard/threads', label: 'Fils & chat' },
     { href: '/dashboard/files', label: 'Fichiers' },

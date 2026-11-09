@@ -13,6 +13,7 @@ export default function Dashboard() {
       <h1>Bonjour {user?.email ?? '👋'}</h1>
       <p>Voici l’espace de gestion AKA CONNECT.</p>
       <div className="list" style={{marginTop:16}}>
+        <Link className="button" href="/dashboard/leads">Leads & prospection</Link>
         <Link className="button" href="/dashboard/calendar">Calendrier</Link>
         <Link className="button" href="/dashboard/threads">Fils & chat</Link>
         <Link className="button" href="/dashboard/files">Fichiers</Link>

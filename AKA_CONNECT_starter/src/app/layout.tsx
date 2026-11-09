@@ -1,5 +1,5 @@
 
-import './styles/globals.css'
+import '../styles/globals.css'
 import Image from 'next/image'
 import Link from 'next/link'
 

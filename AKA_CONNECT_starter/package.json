@@ -6,25 +6,26 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "prisma generate"
+    "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.6.0",
     "@fullcalendar/daygrid": "^6.1.11",
     "@fullcalendar/interaction": "^6.1.11",
     "@fullcalendar/react": "^6.1.11",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/auth-ui-react": "^0.4.7",
-    "@supabase/supabase-js": "^2.45.0",
+    "@supabase/supabase-js": "^2.119.0",
     "next": "14.2.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "server-only": "^0.0.1"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@types/react": "^18.2.66",
     "@types/node": "^20.11.24",
+    "@types/react": "^18.2.66",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.2.3"
+    "eslint-config-next": "14.2.3",
+    "typescript": "^5.4.0"
   }
 }

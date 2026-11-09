@@ -1,1 +1,1 @@
-module.exports = { experimental: { serverActions: true } };
+module.exports = {};
