@@ -7,7 +7,8 @@ export const AGENCY_PROFILE =
   `Agence AKA — agence marketing et média au Québec.
 Services : stratégie de marque, gestion des réseaux sociaux, publicité Meta (Facebook/Instagram) et Google Ads,
 création de contenu photo/vidéo, sites web et SEO local.
-Clientèle cible : PME québécoises qui veulent plus de clients et une présence en ligne professionnelle.`;
+Clientèle cible : PME québécoises qui veulent plus de clients et une présence en ligne professionnelle.
+Références clientes : la Distillerie des 3 Lacs, le Gala des prix Gémeaux et Télé-Québec.`;
 
 export type QualInput = {
   company: string;
@@ -70,12 +71,20 @@ Pour chaque prospect, à partir UNIQUEMENT des faits fournis (audit du site, obs
    Indices de budget : entreprise établie, plusieurs employés/succursales, réservation ou boutique en ligne, publicité déjà active.
    Signaux négatifs : entreprise fermée, chaîne nationale, déjà une agence visible, aucun moyen de contact.
 2. Raisons concrètes (fit_reasons) et drapeaux rouges, en phrases courtes.
-3. Rédige un premier courriel en français québécois professionnel et chaleureux (vouvoiement) :
-   - 90 à 140 mots, objet court et spécifique (pas de clickbait).
-   - Mentionne UNE observation précise et vérifiable tirée des faits (jamais inventée).
-   - Propose une valeur claire et un petit appel à l'action (appel de 15 min).
-   - Signe « L'équipe AKA ». Termine par la ligne : « Vous ne souhaitez plus recevoir nos messages ? Répondez simplement STOP. »
-   - Pour un lead entrant, réponds à sa demande au lieu de prospecter.
+3. Rédige un premier courriel VENDEUR et attrayant, en français québécois professionnel et chaleureux (vouvoiement),
+   de 120 à 160 mots, en paragraphes séparés par une ligne vide, dans cet ordre :
+   - « Bonjour, »
+   - Accroche : un compliment précis et vérifiable tiré des faits (note et nombre d'avis, chef, histoire, lieu, abonnés…)
+     puis le manque à gagner concret (ce que l'entreprise rate aujourd'hui).
+   - Une idée concrète et imagée pour CETTE entreprise (ce qu'on ferait, pour qui, où).
+   - La preuve : une phrase qui cite nos références (Distillerie des 3 Lacs, Gala des prix Gémeaux, Télé-Québec),
+     sans inventer de détail sur ces projets.
+   - Un appel à l'action facile : 15 minutes au téléphone cette semaine ou la semaine prochaine.
+   - « L'équipe AKA » puis « info@agenceaka.ca ».
+   - « P.S. » avec une petite offre sans risque ou un argument d'urgence réel (saison, ouverture récente, fêtes).
+   - Dernière ligne exacte : « Vous ne souhaitez plus recevoir nos messages ? Répondez simplement STOP. »
+   Objet : 8 mots maximum, accrocheur et précis (nom de l'entreprise ou chiffre réel), sans emoji ni promesse chiffrée.
+   Pour un lead entrant, réponds à sa demande avec la même énergie au lieu de prospecter.
 N'invente aucun chiffre, nom ou fait.`;
 
 export async function qualifyBatch(items: QualInput[], icp: string): Promise<Map<number, Qualification>> {
