@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Playfair+Display:ital,wght@1,600;1,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bleu:#cfe4ec;--bleu2:#9cc3d1;--noir:#121314;--creme:#f3efe6;--rouge:#b3272d}
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:var(--W);height:var(--H);background:var(--noir);overflow:hidden;font-family:Inter,sans-serif;color:var(--creme)}
+.scene{position:relative;width:100%;height:100%;
+  background:
+   radial-gradient(ellipse 60% 45% at 72% 52%, rgba(156,195,209,.22), transparent 70%),
+   radial-gradient(ellipse at center, #1d1f21 0%, #0c0d0e 100%);}
+.grain{position:absolute;inset:0;opacity:.09;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+.cadre{position:absolute;inset:34px;border:2px solid rgba(207,228,236,.55)}
+.cadre::after{content:"";position:absolute;inset:8px;border:1px solid rgba(207,228,236,.25)}
+.poteau{position:absolute;left:34px;right:34px;height:16px;
+  background:repeating-linear-gradient(-45deg,var(--rouge) 0 14px,var(--creme) 14px 28px,#2f5d8a 28px 42px,var(--creme) 42px 56px)}
+.haut{top:34px}.bas{bottom:34px}
+.produit{position:absolute;filter:drop-shadow(0 40px 40px rgba(0,0,0,.6)) drop-shadow(0 0 60px rgba(156,195,209,.18))}
+.ombre{position:absolute;height:44px;border-radius:50%;background:radial-gradient(ellipse at center,rgba(0,0,0,.75),transparent 70%)}
+.kicker{font-family:Oswald;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:var(--bleu);font-size:24px;display:flex;align-items:center;gap:16px}
+.kicker::before{content:"";width:46px;height:2px;background:var(--bleu)}
+h1{font-family:Oswald;font-weight:700;text-transform:uppercase;line-height:.92;letter-spacing:.01em}
+h1 em{font-family:'Playfair Display';font-style:italic;font-weight:800;text-transform:none;color:var(--bleu);letter-spacing:0}
+.sous{font-family:'Playfair Display';font-style:italic;font-weight:600;color:var(--creme);opacity:.9}
+.liste{list-style:none;display:flex;flex-direction:column}
+.liste li{display:grid;grid-template-columns:auto 1fr;column-gap:22px;align-items:start}
+.num{font-family:Oswald;font-weight:700;color:var(--noir);background:var(--bleu);border-radius:50%;display:grid;place-items:center}
+.liste b{display:block;font-family:Oswald;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#fff}
+.liste span{color:#c9c6bf;line-height:1.35}
+.cta{display:inline-flex;align-items:center;gap:14px;font-family:Oswald;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--noir);background:var(--creme);padding:16px 28px}
+.etoile{color:var(--rouge)}
+</style></head>
+<body><div class="scene" id="s">
+<div class="grain"></div><div class="cadre"></div><div class="poteau haut"></div><div class="poteau bas"></div>
+<div id="contenu"></div>
+</div>
+<script>
+const fmt=new URLSearchParams(location.search).get('f')||'feed';
+const W=1080,H=fmt==='story'?1920:1350;
+document.documentElement.style.setProperty('--W',W+'px');document.documentElement.style.setProperty('--H',H+'px');
+const avantages=[
+ ['Volume & épaisseur','Pour tous les types de cheveux.'],
+ ['Matte, non collante','Contrôle vos cheveux toute la journée.'],
+ ['Une pincée suffit','À la racine, frottez du bout des doigts.']];
+const c=document.getElementById('contenu');
+if(fmt==='feed'){
+ c.innerHTML=`
+ <div class="ombre" style="left:640px;top:1150px;width:360px"></div>
+ <img class="produit" src="produit-detoure.png" style="left:625px;top:150px;height:1010px">
+ <div style="position:absolute;left:96px;top:120px;width:560px">
+  <div class="kicker">Reuzel · Rotterdam</div>
+  <h1 style="font-size:118px;margin-top:30px">Du volume.<br><em style="font-size:96px">Zéro</em> effet<br>collant.</h1>
+  <p class="sous" style="font-size:36px;margin-top:30px">Poudre texturisante matte</p>
+  <ul class="liste" style="gap:34px;margin-top:56px;width:500px">
+   ${avantages.map((a,i)=>`<li><div class="num" style="width:56px;height:56px;font-size:26px">0${i+1}</div><div><b style="font-size:28px">${a[0]}</b><span style="font-size:23px">${a[1]}</span></div></li>`).join('')}
+  </ul>
+  <div class="cta" style="font-size:24px;margin-top:64px"><span class="etoile">★</span>Disponible au salon<span class="etoile">★</span></div>
+ </div>`;
+}else{
+ c.innerHTML=`
+ <div style="position:absolute;left:0;right:0;top:150px;text-align:center">
+  <div class="kicker" style="justify-content:center">Reuzel · Rotterdam</div>
+  <h1 style="font-size:124px;margin-top:26px">Du volume.<br><em style="font-size:104px">Zéro</em> effet<br>collant.</h1>
+  <p class="sous" style="font-size:38px;margin-top:20px">Poudre texturisante matte</p>
+ </div>
+ <div class="ombre" style="left:360px;top:1300px;width:360px"></div>
+ <img class="produit" src="produit-detoure.png" style="left:50%;transform:translateX(-50%);top:670px;height:640px">
+ <ul class="liste" style="position:absolute;left:120px;right:120px;top:1385px;gap:22px">
+  ${avantages.map((a,i)=>`<li><div class="num" style="width:54px;height:54px;font-size:25px">0${i+1}</div><div><b style="font-size:30px">${a[0]}</b><span style="font-size:25px">${a[1]}</span></div></li>`).join('')}
+ </ul>
+ <div style="position:absolute;left:0;right:0;bottom:100px;text-align:center"><div class="cta" style="font-size:26px"><span class="etoile">★</span>Disponible au salon<span class="etoile">★</span></div></div>`;
+}
+</script></body></html>
