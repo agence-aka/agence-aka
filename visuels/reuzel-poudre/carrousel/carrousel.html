@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--rouge:#c0262d;--gris:#6b6b6b;--txt:#cfcfcf;--ligne:#2b2b2b}
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1350px;background:#111;color:#fff;overflow:hidden;font-family:'Work Sans',sans-serif;position:relative}
+.abs{position:absolute}
+.osw{font-family:Oswald;text-transform:uppercase}
+.kicker{left:60px;top:66px;display:flex;align-items:center;gap:24px;font-family:Oswald;font-weight:600;font-size:30px;letter-spacing:.22em;text-transform:uppercase}
+.kicker::before{content:"";width:76px;height:5px;background:var(--rouge)}
+.page{right:60px;top:66px;font-family:Oswald;font-weight:500;font-size:28px;letter-spacing:.12em;color:var(--gris)}
+.page b{color:#fff;font-weight:600}
+h1,h2{font-family:Oswald;font-weight:700;text-transform:uppercase;line-height:.98}
+.rouge{color:var(--rouge)}
+.contour{color:transparent;-webkit-text-stroke:2px #2c2c2c;font-family:Oswald;font-weight:700;text-transform:uppercase;line-height:.8;white-space:nowrap}
+.produit{filter:drop-shadow(0 40px 50px rgba(0,0,0,.75))}
+.swipe{display:flex;align-items:center;gap:18px;font-family:Oswald;font-weight:600;font-size:30px;letter-spacing:.18em}
+.swipe svg{width:70px}
+.cta{left:40px;right:40px;bottom:24px;height:100px;background:#fff;color:#111;display:flex;align-items:center;justify-content:space-between;padding:0 40px}
+.cta .g{font-family:Oswald;font-weight:600;font-size:40px;letter-spacing:.12em}
+.cta .d{font-family:Oswald;font-weight:600;font-size:38px}
+.p{position:absolute;border-radius:50%;background:#e9e6df}
+</style></head><body>
+<div id="c"></div>
+<script>
+const N=6, s=+(new URLSearchParams(location.search).get('s')||1);
+const prod=(st)=>`<img class="abs produit" src="../produit-detoure.png" style="${st}">`;
+const kick=t=>`<div class="abs kicker">${t}</div><div class="abs page"><b>0${s}</b> / 0${N}</div>`;
+const fleche=`<svg viewBox="0 0 70 20"><path d="M0 10h64M54 2l10 8-10 8" stroke="#fff" stroke-width="3" fill="none"/></svg>`;
+const swipe=(t='Glisse')=>`<div class="abs swipe" style="right:60px;bottom:64px">${t}${fleche}</div>`;
+const cta=`<div class="abs cta"><span class="g">RÉSERVEZ EN LIGNE</span><span class="d">vraigentleman.ca</span></div>`;
+// poudre : nuage de particules (pseudo-aléatoire reproductible)
+let seed=7; const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647};
+const gauss=()=>{let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+function poudre(cx,cy,sx,sy,n){let h='';for(let i=0;i<n;i++){const x=cx+gauss()*sx,y=cy+gauss()*sy,r=rnd()<.8?1.5+rnd()*3:4+rnd()*6,o=(.15+rnd()*.7)*(rnd()<.2?.4:1),b=r>4?'filter:blur(1.5px);':'';h+=`<i class="p" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;width:${r.toFixed(1)}px;height:${r.toFixed(1)}px;opacity:${o.toFixed(2)};${b}"></i>`}return h}
+const icone={
+ pincee:`<svg viewBox="0 0 120 120" width="120"><g fill="#e9e6df"><circle cx="60" cy="58" r="4"/><circle cx="48" cy="72" r="3"/><circle cx="70" cy="76" r="3.5"/><circle cx="58" cy="90" r="2.5"/><circle cx="42" cy="94" r="2"/><circle cx="76" cy="98" r="2"/><circle cx="62" cy="108" r="1.6"/></g><path d="M34 14c8 10 16 16 26 18M86 14c-8 10-16 16-26 18" stroke="#fff" stroke-width="6" stroke-linecap="round" fill="none"/></svg>`,
+ frotte:`<svg viewBox="0 0 120 120" width="120"><path d="M60 20a40 40 0 1 1-37 25" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M14 38l9 9 10-9" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="60" cy="60" r="8" fill="#c0262d"/></svg>`,
+ volume:`<svg viewBox="0 0 120 120" width="120"><path d="M20 104h80" stroke="#c0262d" stroke-width="6" stroke-linecap="round"/><path d="M36 92V44M60 92V22M84 92V44" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M26 54l10-12 10 12M50 32l10-12 10 12M74 54l10-12 10 12" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`};
+const slides={
+1:()=>`
+ <div class="abs contour" style="left:-20px;top:930px;font-size:330px">VOLUME</div>
+ ${poudre(850,250,130,80,520)}
+ ${prod('left:680px;top:190px;height:980px;transform:rotate(8deg)')}
+ ${kick('En vente au salon')}
+ <h1 class="abs" style="left:60px;top:140px;font-size:124px">Le secret<br>du volume<span class="rouge">?</span></h1>
+ <p class="abs osw" style="left:62px;top:540px;font-size:56px;font-weight:600;line-height:1.05">Une pincée<br>suffit.</p>
+ <p class="abs" style="left:62px;top:700px;font-size:27px;color:var(--txt);line-height:1.5">Poudre texturisante matte<br>Reuzel, 15 g.</p>
+ ${swipe()}`,
+2:()=>`
+ ${kick('Le problème')}
+ <h1 class="abs" style="left:60px;top:150px;font-size:112px">Tes cheveux<br>tombent à plat<br>avant midi<span class="rouge">?</span></h1>
+ <div class="abs" style="left:60px;right:60px;top:560px">
+  ${['Le produit qui colle aux doigts','Le fini mouillé qui brille','La coiffure qui retombe'].map((t,i)=>`
+   <div style="display:flex;align-items:center;gap:30px;border-top:2px solid var(--ligne);padding:30px 0">
+    <span class="osw" style="font-size:36px;font-weight:600;color:var(--gris);width:52px">0${i+1}</span>
+    <span class="osw" style="font-size:46px;font-weight:500;color:#8a8a8a;position:relative">${t}<i style="position:absolute;left:-6px;right:-6px;top:52%;height:5px;background:var(--rouge)"></i></span>
+   </div>`).join('')}
+ </div>
+ <h2 class="abs" style="left:60px;top:1020px;font-size:110px">Y'a plus <span class="rouge">simple.</span></h2>
+ ${swipe()}`,
+3:()=>{
+ const lab=(t,d,x,y,side,lx)=>`<div class="abs" style="${side}:60px;top:${y}px;width:300px;text-align:${side}">
+   <div class="osw" style="font-size:40px;font-weight:600">${t}</div><div style="font-size:23px;color:var(--txt);margin-top:6px;line-height:1.45">${d}</div></div>
+   <div class="abs" style="top:${y+26}px;${side}:${lx[0]}px;width:${lx[1]}px;height:2px;background:var(--rouge)"></div>
+   <i class="abs" style="top:${y+21}px;${side}:${lx[0]+lx[1]-6}px;width:12px;height:12px;border-radius:50%;background:var(--rouge)"></i>`;
+ return `
+ ${kick('Le produit')}
+ <h1 class="abs" style="left:0;right:0;top:140px;text-align:center;font-size:104px">Petit format.<br><span class="rouge">Gros</span> effet.</h1>
+ ${poudre(540,1215,170,16,160)}
+ ${prod('left:50%;transform:translateX(-50%);top:390px;height:830px')}
+ ${lab('Volume','Et de l’épaisseur, pour tous les types de cheveux.',0,470,'left',[370,90])}
+ ${lab('Fini mat','Aucun effet mouillé ni brillant.',0,820,'left',[370,90])}
+ ${lab('Non collante','Formule légère, rien sur les doigts.',0,470,'right',[370,90])}
+ ${lab('Contrôle','Tes cheveux restent en place toute la journée.',0,820,'right',[370,90])}
+ ${swipe()}`},
+4:()=>`
+ ${kick('Mode d’emploi')}
+ <h1 class="abs" style="left:60px;top:140px;font-size:120px">3 gestes.<br>10 secondes.</h1>
+ <div class="abs" style="left:60px;right:60px;top:420px">
+ ${[['pincee','Une pincée','Saupoudre une petite quantité directement à la racine.'],
+    ['frotte','Frotte','Masse du bout des doigts pour faire pénétrer la poudre.'],
+    ['volume','Laisse agir','Le volume fait son effet. Coiffe à la main, c’est fait.']].map((e,i)=>`
+  <div style="display:grid;grid-template-columns:150px 140px 1fr;align-items:center;border-top:2px solid var(--ligne);padding:34px 0">
+   <span class="contour" style="font-size:190px;-webkit-text-stroke:2px #555;line-height:.75">${i+1}</span>
+   ${icone[e[0]]}
+   <div><div class="osw" style="font-size:48px;font-weight:600">${e[1]}</div><div style="font-size:25px;color:var(--txt);line-height:1.45;margin-top:6px">${e[2]}</div></div>
+  </div>`).join('')}
+ </div>
+ ${swipe()}`,
+5:()=>`
+ ${kick('Le résultat')}
+ ${poudre(870,330,120,120,380)}
+ ${prod('left:735px;top:300px;height:780px;transform:rotate(-6deg)')}
+ <h1 class="abs" style="left:60px;top:140px;font-size:112px">Ce que<br>tu gagnes.</h1>
+ <div class="abs" style="left:60px;width:640px;top:420px">
+ ${['Du volume','De l’épaisseur','Un fini mat','Zéro effet collant','Contrôle toute la journée'].map(t=>`
+  <div style="display:flex;align-items:center;gap:26px;border-top:2px solid var(--ligne);padding:26px 0">
+   <svg viewBox="0 0 40 40" width="44"><circle cx="20" cy="20" r="19" fill="#c0262d"/><path d="M11 20.5l6 6 12-13" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+   <span class="osw" style="font-size:44px;font-weight:600">${t}</span></div>`).join('')}
+ </div>
+ <p class="abs" style="left:60px;top:1120px;font-size:27px;color:var(--txt)">Pour tous les types de cheveux.</p>
+ ${swipe()}`,
+6:()=>`
+ ${kick('En vente au salon')}
+ <div class="abs contour" style="left:50%;transform:translateX(-50%);top:420px;font-size:520px;-webkit-text-stroke:2px #262626">15G</div>
+ ${poudre(540,400,200,70,520)}
+ ${prod('left:50%;transform:translateX(-50%) rotate(-4deg);top:390px;height:640px')}
+ <h1 class="abs" style="left:0;right:0;top:140px;text-align:center;font-size:96px">Demande-la à ton barbier.</h1>
+ <p class="abs" style="left:0;right:0;top:1060px;text-align:center;font-size:30px;color:var(--txt);line-height:1.5">Reuzel Poudre texturisante matte, en vente au salon.<br>Ajoute-la à ta prochaine coupe.</p>
+ ${cta}`};
+document.getElementById('c').innerHTML=slides[s]();
+</script></body></html>
