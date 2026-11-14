@@ -26,7 +26,7 @@ h1,h2{font-family:Oswald;font-weight:700;text-transform:uppercase;line-height:.9
 <script>
 const N=6, s=+(new URLSearchParams(location.search).get('s')||1);
 const prod=(st)=>`<img class="abs produit" src="../produit-detoure.png" style="${st}">`;
-const kick=t=>`<div class="abs kicker">${t}</div><div class="abs page"><b>0${s}</b> / 0${N}</div>`;
+const kick=t=>`<div class="abs kicker">${t}</div>`;
 const fleche=`<svg viewBox="0 0 70 20"><path d="M0 10h64M54 2l10 8-10 8" stroke="#fff" stroke-width="3" fill="none"/></svg>`;
 const swipe=(t='Glisse')=>`<div class="abs swipe" style="right:60px;bottom:64px">${t}${fleche}</div>`;
 const cta=`<div class="abs cta"><span class="g">RÉSERVEZ EN LIGNE</span><span class="d">vraigentleman.ca</span></div>`;
@@ -47,7 +47,7 @@ const slides={
  <h1 class="abs" style="left:60px;top:140px;font-size:124px">Le secret<br>du volume<span class="rouge">?</span></h1>
  <p class="abs osw" style="left:62px;top:540px;font-size:56px;font-weight:600;line-height:1.05">Une pincée<br>suffit.</p>
  <p class="abs" style="left:62px;top:700px;font-size:27px;color:var(--txt);line-height:1.5">Poudre texturisante matte<br>Reuzel, 15 g.</p>
- ${swipe()}`,
+`,
 2:()=>`
  ${kick('Le problème')}
  <h1 class="abs" style="left:60px;top:150px;font-size:112px">Tes cheveux<br>tombent à plat<br>avant midi<span class="rouge">?</span></h1>
@@ -59,7 +59,7 @@ const slides={
    </div>`).join('')}
  </div>
  <h2 class="abs" style="left:60px;top:1020px;font-size:110px">Y'a plus <span class="rouge">simple.</span></h2>
- ${swipe()}`,
+`,
 3:()=>{
  const lab=(t,d,x,y,side,lx)=>`<div class="abs" style="${side}:60px;top:${y}px;width:300px;text-align:${side}">
    <div class="osw" style="font-size:40px;font-weight:600">${t}</div><div style="font-size:23px;color:var(--txt);margin-top:6px;line-height:1.45">${d}</div></div>
@@ -74,7 +74,7 @@ const slides={
  ${lab('Fini mat','Aucun effet mouillé ni brillant.',0,820,'left',[370,90])}
  ${lab('Non collante','Formule légère, rien sur les doigts.',0,470,'right',[370,90])}
  ${lab('Contrôle','Tes cheveux restent en place toute la journée.',0,820,'right',[370,90])}
- ${swipe()}`},
+`},
 4:()=>`
  ${kick('Mode d’emploi')}
  <h1 class="abs" style="left:60px;top:140px;font-size:120px">3 gestes.<br>10 secondes.</h1>
@@ -88,7 +88,7 @@ const slides={
    <div><div class="osw" style="font-size:48px;font-weight:600">${e[1]}</div><div style="font-size:25px;color:var(--txt);line-height:1.45;margin-top:6px">${e[2]}</div></div>
   </div>`).join('')}
  </div>
- ${swipe()}`,
+`,
 5:()=>`
  ${kick('Le résultat')}
  ${poudre(870,330,120,120,380)}
@@ -101,7 +101,7 @@ const slides={
    <span class="osw" style="font-size:44px;font-weight:600">${t}</span></div>`).join('')}
  </div>
  <p class="abs" style="left:60px;top:1120px;font-size:27px;color:var(--txt)">Pour tous les types de cheveux.</p>
- ${swipe()}`,
+`,
 6:()=>`
  ${kick('En vente au salon')}
  <div class="abs contour" style="left:50%;transform:translateX(-50%);top:420px;font-size:520px;-webkit-text-stroke:2px #262626">15G</div>
